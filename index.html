@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CISA - Logiciel d'Archivage Électronique</title>
+    <link rel="icon" type="image/jpeg" href="logo.jpg" />
+    <link rel="stylesheet" href="interface.css" />
+</head>
+<body>
+    <header>
+        <img id="logo-header" src="logo.jpg" alt="DARK Logo" style="cursor: pointer;" />
+        <div id="global-search-container" class="hidden" style="flex:1; display:flex; align-items:center; gap:10px; padding:0 10px;">
+            <input id="global-search" type="text" placeholder="Rechercher un client, dossier ou document..." style="flex:1; max-width:640px;" />
+            <button id="btn-global-search" class="nav-btn">Rechercher</button>
+        </div>
+        <nav>
+            <button id="btn-connexion" class="nav-btn">Connexion</button>
+        </nav>
+    </header>
+    <aside id="sidebar" class="sidebar hidden">
+        <div class="sidebar-section">
+            <button id="btn-dashboard" class="nav-btn side">🏠 Tableau de bord</button>
+        </div>
+        <div class="sidebar-section" id="nav-admin" data-role="admin-only">
+            <h4>Administration</h4>
+            <button id="btn-utilisateurs" class="nav-btn side">👤 Utilisateurs</button>
+        </div>
+        <div class="sidebar-section">
+            <h4>Services</h4>
+            <button id="btn-service-compte" class="nav-btn side">💼 Compte</button>
+            <button id="btn-service-comptabilite" class="nav-btn side">📊 Comptabilité</button>
+            <button id="btn-service-rh" class="nav-btn side">👥 Ressources Humaines</button>
+            <button id="btn-service-etranger" class="nav-btn side">🌍 Service Étranger</button>
+            <button id="btn-service-audit" class="nav-btn side">🔍 Audit</button>
+            <button id="btn-service-risque" class="nav-btn side">⚠️ Service Risque</button>
+        </div>
+        <div class="sidebar-section">
+            <h4>Outils</h4>
+            <button id="btn-recherche" class="nav-btn side">🔎 Recherche</button>
+            <button id="btn-parametres" class="nav-btn side">⚙️ Paramètres</button>
+            <button id="btn-profil" class="nav-btn side">🧑 Mon profil</button>
+        </div>
+    </aside>
+
+    <main>
+        <!-- Page de Connexion -->
+        <section id="connexion" class="section active">
+            <div class="auth-container">
+                <h2>Connexion à CISA</h2>
+                <form id="form-connexion">
+                    <div class="form-group">
+                        <label for="email-connexion">Email :</label>
+                        <input type="email" id="email-connexion" name="email" placeholder="Votre adresse email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="mot-de-passe-connexion">Mot de passe :</label>
+                        <input type="password" id="mot-de-passe-connexion" name="motDePasse" placeholder="Votre mot de passe" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Se connecter</button>
+                        <button type="button" id="btn-vers-inscription" class="btn-secondary">Créer un compte</button>
+                    </div>
+                </form>
+                <div class="auth-links">
+                    <a href="#" id="lien-mot-de-passe-oublie">Mot de passe oublié ?</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page d'Inscription -->
+        <section id="inscription" class="section hidden">
+            <div class="auth-container">
+                <h2>Créer un compte CISA</h2>
+                <form id="form-inscription">
+                    <div class="form-group">
+                        <label for="nom-inscription">Nom :</label>
+                        <input type="text" id="nom-inscription" name="nom" placeholder="Votre nom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="prenom-inscription">Prénom :</label>
+                        <input type="text" id="prenom-inscription" name="prenom" placeholder="Votre prénom" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email-inscription">Email :</label>
+                        <input type="email" id="email-inscription" name="email" placeholder="Votre adresse email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telephone-inscription">Téléphone :</label>
+                        <input type="tel" id="telephone-inscription" name="telephone" placeholder="Votre numéro de téléphone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="organisation-inscription">Organisation :</label>
+                        <input type="text" id="organisation-inscription" name="organisation" placeholder="Nom de votre organisation">
+                    </div>
+                    <div class="form-group">
+                        <label for="mot-de-passe-inscription">Mot de passe :</label>
+                        <input type="password" id="mot-de-passe-inscription" name="motDePasse" placeholder="Créer un mot de passe" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmer-mot-de-passe">Confirmer le mot de passe :</label>
+                        <input type="password" id="confirmer-mot-de-passe" name="confirmerMotDePasse" placeholder="Confirmer votre mot de passe" required>
+                    </div>
+                    <div class="form-group checkbox-group">
+                        <input type="checkbox" id="accepter-conditions" name="accepterConditions" required>
+                        <label for="accepter-conditions">J'accepte les <a href="#" id="lien-conditions">conditions d'utilisation</a> et la <a href="#" id="lien-confidentialite">politique de confidentialité</a></label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">Créer le compte</button>
+                        <button type="button" id="btn-vers-connexion" class="btn-secondary">J'ai déjà un compte</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Page de récupération de mot de passe -->
+        <section id="mot-de-passe-oublie" class="section hidden">
+            <div class="auth-container">
+                <h2>🔑 Récupération de mot de passe</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: #6c757d;">
+                    Entrez votre adresse email pour réinitialiser votre mot de passe.
+                </p>
+                <form id="form-mot-de-passe-oublie">
+                    <div class="form-group">
+                        <label for="email-recuperation">Email :</label>
+                        <input type="email" id="email-recuperation" name="email" placeholder="Votre adresse email" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">📧 Envoyer le lien de récupération</button>
+                        <button type="button" id="btn-retour-connexion" class="btn-secondary">← Retour à la connexion</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Page de réinitialisation de mot de passe -->
+        <section id="reinitialiser-mot-de-passe" class="section hidden">
+            <div class="auth-container">
+                <h2>🔐 Nouveau mot de passe</h2>
+                <p style="text-align: center; margin-bottom: 2rem; color: #6c757d;">
+                    Définissez votre nouveau mot de passe.
+                </p>
+                <form id="form-reinitialiser-mot-de-passe">
+                    <div class="form-group">
+                        <label for="email-reinitialisation">Email :</label>
+                        <input type="email" id="email-reinitialisation" name="email" placeholder="Votre adresse email" required readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="nouveau-mot-de-passe">Nouveau mot de passe :</label>
+                        <input type="password" id="nouveau-mot-de-passe" name="nouveauMotDePasse" placeholder="Votre nouveau mot de passe" required minlength="6">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmer-nouveau-mot-de-passe">Confirmer le nouveau mot de passe :</label>
+                        <input type="password" id="confirmer-nouveau-mot-de-passe" name="confirmerNouveauMotDePasse" placeholder="Confirmer votre nouveau mot de passe" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-primary">✅ Réinitialiser le mot de passe</button>
+                        <button type="button" id="btn-annuler-reinitialisation" class="btn-secondary">❌ Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Page d'accès restreint -->
+        <section id="acces-restreint" class="section hidden">
+            <div class="restricted-access">
+                <div class="restricted-icon">🔒</div>
+                <h2>Accès Restreint</h2>
+                <p>Vous devez être connecté pour accéder à cette fonctionnalité.</p>
+                <div class="restricted-actions">
+                    <button id="btn-connexion-restreint" class="btn-primary">Se connecter</button>
+                    <button id="btn-inscription-restreint" class="btn-secondary">Créer un compte</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page d'accueil (sans connexion) -->
+        <section id="dashboard" class="section active">
+            <!-- Bannière d'accueil -->
+            <div class="hero">
+              <div class="hero-content">
+                <h2>Solutions d'Archivage Electronique CISA</h2>
+
+              </div>
+              <div class="hero-image">
+                <img src="dark.jpg" alt="Présentation CISA" />
+              </div>
+            </div>
+          
+            <!-- Nos Services -->
+            <section class="services">
+              <h3>Que fait CISA</h3>
+              <div class="services-grid">
+                <div class="service-card">
+                  <div class="icon">📁</div>
+                  <h4>Archivage Sécurisé</h4>
+                  <p>Stockage chiffré et structuré de vos documents avec accès restreint.</p>
+                </div>
+                <div class="service-card">
+                  <div class="icon">🔍</div>
+                  <h4>Recherche Avancée</h4>
+                  <p>Filtrez vos fichiers par mots-clés, type, date ou utilisateur.</p>
+                </div>
+                <div class="service-card">
+                  <div class="icon">🔔</div>
+                  <h4>Alertes et Notifications</h4>
+                  <p>Recevez des alertes personnalisées pour chaque mise à jour ou échéance.</p>
+                </div>
+              </div>
+            </section>
+          
+            <!-- Pourquoi Choisir CISA -->
+            <section class="reasons">
+              <h3>Pourquoi Choisir CISA</h3>
+              <ul class="reasons-list">
+                <li><strong>01.</strong> Sécurité maximale des données</li>
+                <li><strong>02.</strong> Support technique 24/7</li>
+                <li><strong>03.</strong> Interface moderne et intuitive</li>
+                <li><strong>04.</strong> Mises à jour régulières</li>
+                <li><strong>05.</strong> Archivage automatique</li>
+                <li><strong>06.</strong> Conforme aux normes RGPD</li>
+              </ul>
+            </section>
+        </section>
+
+        <!-- Tableau de Bord (après connexion) -->
+        <section id="tableau-de-bord" class="section hidden">
+            <h2>📊 Tableau de Bord</h2>
+            
+            <!-- Widgets Statistiques -->
+            <div class="dashboard-stats" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Total Documents</p>
+                            <h3 style="margin: 0.5rem 0 0; font-size: 2rem; font-weight: bold;" id="stat-total-documents">0</h3>
+                        </div>
+                        <div style="font-size: 3rem; opacity: 0.8;">📄</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Total Comptes</p>
+                            <h3 style="margin: 0.5rem 0 0; font-size: 2rem; font-weight: bold;" id="stat-total-comptes">0</h3>
+                        </div>
+                        <div style="font-size: 3rem; opacity: 0.8;">💼</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Documents ce mois</p>
+                            <h3 style="margin: 0.5rem 0 0; font-size: 2rem; font-weight: bold;" id="stat-documents-mois">0</h3>
+                        </div>
+                        <div style="font-size: 3rem; opacity: 0.8;">📅</div>
+                    </div>
+                </div>
+                
+                <div class="stat-card" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 1.5rem; border-radius: 1rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <p style="margin: 0; opacity: 0.9; font-size: 0.9rem;">Services actifs</p>
+                            <h3 style="margin: 0.5rem 0 0; font-size: 2rem; font-weight: bold;" id="stat-services-actifs">0</h3>
+                        </div>
+                        <div style="font-size: 3rem; opacity: 0.8;">🏢</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Graphiques et Statistiques -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem;">
+                <!-- Documents par Service -->
+                <div class="card">
+                    <h3>📊 Documents par Service</h3>
+                    <div id="chart-services" style="min-height: 300px; padding: 1rem;">
+                        <canvas id="chart-services-canvas"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Documents Récents -->
+                <div class="card">
+                    <h3>📋 Documents Récemment Ajoutés</h3>
+                    <div id="documents-recents" style="max-height: 300px; overflow-y: auto;">
+                        <p style="text-align: center; color: #6c757d; font-style: italic;">Aucun document récent</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Répartition par Dossier -->
+            <div class="card" style="margin-bottom: 2rem;">
+                <h3>📁 Répartition des Documents par Dossier</h3>
+                <div id="chart-dossiers" style="min-height: 250px; padding: 1rem;">
+                    <div id="dossiers-stats-list"></div>
+                </div>
+            </div>
+            
+            <!-- Statistiques détaillées -->
+            <div class="card">
+                <h3>📈 Statistiques Détaillées</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                    <div style="padding: 1rem; background: #f8f9fa; border-radius: 0.5rem;">
+                        <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Comptes Particuliers</p>
+                        <h4 style="margin: 0.5rem 0 0; font-size: 1.5rem;" id="stat-comptes-particuliers">0</h4>
+                    </div>
+                    <div style="padding: 1rem; background: #f8f9fa; border-radius: 0.5rem;">
+                        <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Comptes Entreprises</p>
+                        <h4 style="margin: 0.5rem 0 0; font-size: 1.5rem;" id="stat-comptes-entreprises">0</h4>
+                    </div>
+                    <div style="padding: 1rem; background: #f8f9fa; border-radius: 0.5rem;">
+                        <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Utilisateurs Actifs</p>
+                        <h4 style="margin: 0.5rem 0 0; font-size: 1.5rem;" id="stat-utilisateurs">0</h4>
+                    </div>
+                    <div style="padding: 1rem; background: #f8f9fa; border-radius: 0.5rem;">
+                        <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Documents aujourd'hui</p>
+                        <h4 style="margin: 0.5rem 0 0; font-size: 1.5rem;" id="stat-documents-aujourdhui">0</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Utilisateurs (Admin) -->
+        <section id="utilisateurs" class="section hidden">
+            <h2>🔐 Espace Administration</h2>
+            <h3 style="margin-top: 1rem; margin-bottom: 1.5rem; color: var(--couleur-secondaire);">Gestion des utilisateurs</h3>
+            <div class="card">
+                <form id="form-utilisateur" class="grid-3">
+                    <input name="nom" placeholder="Nom" required />
+                    <input name="prenom" placeholder="Prénom" />
+                    <input name="email" type="email" placeholder="Email" required />
+                    <select name="role" required>
+                        <option value="">-- Sélectionnez un rôle --</option>
+                        <option value="admin">Administrateur</option>
+                        <option value="agent">Agent</option>
+                        <option value="consultation">Consultation</option>
+                    </select>
+                    <input name="motDePasse" id="input-mot-de-passe" type="password" placeholder="Mot de passe" required />
+                    <input name="organisation" placeholder="Organisation (optionnel)" />
+                    <button class="btn-primary" type="submit">💾 Enregistrer</button>
+                    <button class="btn-secondary" type="reset">🔄 Réinitialiser</button>
+                </form>
+            </div>
+            <div class="table-wrapper" style="margin-top: 2rem;">
+                <table id="table-utilisateurs">
+                    <thead>
+                        <tr><th>Nom</th><th>Email</th><th>Rôle</th><th>Actions</th></tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Clients -->
+        <section id="clients" class="section hidden">
+            <h2>Gestion des comptes</h2>
+            
+            <!-- Sélection du type de compte -->
+            <div id="compte-type-selection" class="card">
+                <h3 style="text-align: center; margin-bottom: 1.5rem;">Sélectionnez le type de compte</h3>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; max-width: 600px; margin: 0 auto;">
+                    <button id="btn-compte-particulier" class="btn-primary" style="padding: 2rem; font-size: 1.1rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 2.5rem;">👤</span>
+                        <span>Compte Particulier</span>
+                    </button>
+                    <button id="btn-compte-entreprise" class="btn-primary" style="padding: 2rem; font-size: 1.1rem; display: flex; flex-direction: column; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 2.5rem;">🏢</span>
+                        <span>Compte Entreprise</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Contenu pour Compte Particulier -->
+            <div id="compte-particulier-content" class="hidden">
+                <div style="margin-bottom: 1rem;">
+                    <button id="btn-back-particulier" class="btn-secondary">← Retour</button>
+                    <h3 style="text-align: left; margin-top: 1rem;">Compte Particulier</h3>
+                </div>
+                <div class="card">
+                    <form id="form-client-particulier" class="grid-3">
+                        <input name="nom" placeholder="Nom complet" required />
+                        <input name="contact" placeholder="Contact" />
+                        <input name="telephone" placeholder="Téléphone" />
+                        <input name="email" type="email" placeholder="Email" />
+                        <button class="btn-primary" type="submit">Enregistrer</button>
+                        <button class="btn-secondary" type="reset">Réinitialiser</button>
+                    </form>
+                </div>
+                <div class="toolbar">
+                    <input id="recherche-client-particulier" placeholder="Rechercher un compte particulier..." />
+                </div>
+                <div class="table-wrapper">
+                    <table id="table-clients-particulier">
+                        <thead>
+                            <tr><th>Nom</th><th>Contact</th><th>Téléphone</th><th>Email</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <div id="clients-particulier-pagination" class="pagination"></div>
+                </div>
+            </div>
+
+            <!-- Contenu pour Compte Entreprise -->
+            <div id="compte-entreprise-content" class="hidden">
+                <div style="margin-bottom: 1rem;">
+                    <button id="btn-back-entreprise" class="btn-secondary">← Retour</button>
+                    <h3 style="text-align: left; margin-top: 1rem;">Compte Entreprise</h3>
+                </div>
+                <div class="card">
+                    <form id="form-client-entreprise" class="grid-3">
+                        <input name="nom" placeholder="Nom de l'entreprise" required />
+                        <input name="contact" placeholder="Personne de contact" />
+                        <input name="telephone" placeholder="Téléphone" />
+                        <input name="email" type="email" placeholder="Email" />
+                        <button class="btn-primary" type="submit">Enregistrer</button>
+                        <button class="btn-secondary" type="reset">Réinitialiser</button>
+                    </form>
+                </div>
+                <div class="toolbar">
+                    <input id="recherche-client-entreprise" placeholder="Rechercher une entreprise..." />
+                </div>
+                <div class="table-wrapper">
+                    <table id="table-clients-entreprise">
+                        <thead>
+                            <tr><th>Nom</th><th>Contact</th><th>Téléphone</th><th>Email</th><th>Actions</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                    <div id="clients-entreprise-pagination" class="pagination"></div>
+                </div>
+              </div>
+            </section>
+
+        <!-- Section Services -->
+        <section id="services" class="section hidden">
+            <div id="service-selection">
+                <h2>Choisissez un service</h2>
+                <div class="services-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 2rem;">
+                    <button class="service-card-btn" onclick="afficherService('compte')" style="padding: 2rem; text-align: center; border: none; border-radius: 1rem; background: var(--card-bg); cursor: pointer; transition: transform 0.2s;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">💼</div>
+                        <h3>Compte</h3>
+                    </button>
+                    <button class="service-card-btn" onclick="afficherService('comptabilite')" style="padding: 2rem; text-align: center; border: none; border-radius: 1rem; background: var(--card-bg); cursor: pointer; transition: transform 0.2s;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                        <h3>Comptabilité</h3>
+                    </button>
+                    <button class="service-card-btn" onclick="afficherService('rh')" style="padding: 2rem; text-align: center; border: none; border-radius: 1rem; background: var(--card-bg); cursor: pointer; transition: transform 0.2s;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">👥</div>
+                        <h3>Ressources Humaines</h3>
+                    </button>
+                    <button class="service-card-btn" onclick="afficherService('etranger')" style="padding: 2rem; text-align: center; border: none; border-radius: 1rem; background: var(--card-bg); cursor: pointer; transition: transform 0.2s;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🌍</div>
+                        <h3>Service Étranger</h3>
+                    </button>
+                    <button class="service-card-btn" onclick="afficherService('audit')" style="padding: 2rem; text-align: center; border: none; border-radius: 1rem; background: var(--card-bg); cursor: pointer; transition: transform 0.2s;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🔍</div>
+                        <h3>Audit</h3>
+                    </button>
+                    <button class="service-card-btn" onclick="afficherService('risque')" style="padding: 2rem; text-align: center; border: none; border-radius: 1rem; background: var(--card-bg); cursor: pointer; transition: transform 0.2s;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">⚠️</div>
+                        <h3>Service Risque</h3>
+                    </button>
+                </div>
+            </div>
+
+            <div id="service-content" class="hidden">
+                <div style="margin-bottom: 1rem;">
+                    <button id="btn-back-service" class="btn-secondary">← Retour aux services</button>
+                    <h2 id="service-title" style="margin-top: 1rem;"></h2>
+                </div>
+            <button id="ajouter-document" class="btn-primary">📄 Ajouter un document</button>
+        
+            <div id="type-document-container" class="hidden">
+                    <h3>Sélectionnez le service, dossier et sous-dossier</h3>
+                    <div style="margin-bottom: 15px;">
+                        <label for="select-service">Service :</label>
+                        <select id="select-service" required>
+                            <option value="">-- Sélectionnez un service --</option>
+                            <option value="compte">💼 Compte</option>
+                            <option value="comptabilite">📊 Comptabilité</option>
+                            <option value="rh">👥 Ressources Humaines</option>
+                            <option value="etranger">🌍 Service Étranger</option>
+                            <option value="audit">🔍 Audit</option>
+                            <option value="risque">⚠️ Service Risque</option>
+                        </select>
+                    </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="dossier-principal">Dossier :</label>
+                        <select id="dossier-principal" required>
+                            <option value="">-- Sélectionnez un dossier --</option>
+                </select>
+            </div>
+                    <div style="margin-bottom: 15px;">
+                        <label for="sous-dossier">Sous-dossier :</label>
+                        <select id="sous-dossier" required>
+                            <option value="">-- Sélectionnez d'abord un dossier --</option>
+                </select>
+            </div>
+            </div>
+            
+                <!-- Formulaire de téléversement direct -->
+                <div id="formulaire-upload-direct" class="hidden card" style="margin-top: 1.5rem;">
+                    <h3>📄 Téléverser un document</h3>
+                    <form id="form-upload-direct" enctype="multipart/form-data">
+                        <div style="margin-bottom: 15px;">
+                            <label for="titre-document">Titre du document :</label>
+                            <input type="text" id="titre-document" name="titre" placeholder="Ex: Facture janvier 2025" required />
+                    </div>
+                        <div style="margin-bottom: 15px;">
+                            <label for="client-document">Client associé :</label>
+                            <input type="text" id="client-document" name="client" placeholder="Nom du client (optionnel)" />
+                </div>
+                        <div style="margin-bottom: 15px;">
+                            <label for="fichier-document">Fichier à téléverser :</label>
+                            <input type="file" id="fichier-document" name="fichier" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" required />
+                            <small style="color: #6c757d; display: block; margin-top: 0.5rem;">Formats acceptés : PDF, Word, Images (JPG, PNG)</small>
+                    </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button type="submit" class="btn-primary">💾 Enregistrer le document</button>
+                            <button type="button" class="btn-secondary" onclick="resetFormUpload()">🔄 Annuler</button>
+                </div>
+                    </form>
+                </div>
+
+                <div id="formulaire-document" class="hidden"></div>
+                
+                <!-- Affichage des services avec dossiers et sous-dossiers -->
+                <div id="categories-container" class="categories-container"></div>
+            </div>
+        </section>        
+
+        <!-- Page Recherche -->
+        <section id="recherche" class="section hidden">
+            <h2>🔍 Recherche avancée</h2>
+            <div class="search-controls">
+                <div style="margin-bottom: 15px;">
+                    <input type="text" id="champ-recherche" placeholder="🔎 Rechercher par mot-clé..." />
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                    <div>
+                        <label for="recherche-date">📅 Rechercher par date :</label>
+                        <input type="date" id="recherche-date" />
+                    </div>
+                    <div>
+                        <label for="recherche-numero">🔢 Rechercher par numéro :</label>
+                        <input type="text" id="recherche-numero" placeholder="Ex: 001, 2025-001..." />
+                    </div>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="filtre-service">🏢 Filtrer par service :</label>
+                    <select id="filtre-service">
+                        <option value="">Tous les services</option>
+                        <option value="compte">💼 Compte</option>
+                        <option value="comptabilite">📊 Comptabilité</option>
+                        <option value="rh">👥 Ressources Humaines</option>
+                        <option value="etranger">🌍 Service Étranger</option>
+                        <option value="audit">🔍 Audit</option>
+                        <option value="risque">⚠️ Service Risque</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="filtre-dossier">📁 Filtrer par dossier :</label>
+                    <select id="filtre-dossier">
+                        <option value="">Tous les dossiers</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label for="filtre-sous-dossier">📂 Filtrer par sous-dossier :</label>
+                    <select id="filtre-sous-dossier">
+                        <option value="">Tous les sous-dossiers</option>
+                </select>
+                </div>
+                <button onclick="rechercherDocuments()" class="btn-primary" style="width: 100%;">🔍 Rechercher</button>
+                <button onclick="resetRecherche()" class="btn-secondary" style="width: 100%; margin-top: 10px;">🔄 Réinitialiser</button>
+            </div>
+            <div id="resultats-recherche" class="resultats-recherche">
+                <p style="text-align: center; color: #6c757d; font-style: italic;">🔍 Utilisez les filtres ci-dessus pour rechercher des documents.</p>
+            </div>
+        </section>
+        
+        <!-- Page Paramètres -->
+        <section id="parametres" class="section hidden">
+            <h2>⚙️ Paramètres</h2>
+            <div class="parametres-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.5rem; margin-top: 1.5rem;">
+                <div class="parametre-card card">
+                    <h3>👤 Informations du compte</h3>
+                    <div id="info-utilisateur">
+                        <p><strong>Nom complet :</strong> <span id="user-nom">-</span></p>
+                        <p><strong>Email :</strong> <span id="user-email">-</span></p>
+                        <p><strong>Rôle :</strong> <span id="user-role">-</span></p>
+                        <p><strong>Organisation :</strong> <span id="user-organisation">-</span></p>
+                        <button id="btn-deconnexion" class="btn-danger" style="margin-top: 1rem; width: 100%;">🚪 Se déconnecter</button>
+                    </div>
+                </div>
+                <div class="parametre-card card">
+                    <h3>📊 Statistiques générales</h3>
+                    <div id="stats-parametres">
+                        <p><strong>Total de documents :</strong> <span id="total-documents-param">0</span></p>
+                        <p><strong>Total de comptes :</strong> <span id="total-comptes-param">0</span></p>
+                        <p><strong>Services actifs :</strong> <span id="services-actifs-param">0</span></p>
+                        <p><strong>Utilisateurs :</strong> <span id="total-utilisateurs-param">0</span></p>
+                        <p><strong>Documents ce mois :</strong> <span id="docs-mois-param">0</span></p>
+                        <p><strong>Documents aujourd'hui :</strong> <span id="docs-aujourdhui-param">0</span></p>
+                    </div>
+                </div>
+                <div class="parametre-card card">
+                    <h3>💾 Actions sur les données</h3>
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <button onclick="exporterDonnees()" class="btn-primary" style="width: 100%;">📤 Exporter toutes les données</button>
+                        <button onclick="exporterDocuments()" class="btn-secondary" style="width: 100%;">📄 Exporter les documents</button>
+                        <button onclick="exporterComptes()" class="btn-secondary" style="width: 100%;">💼 Exporter les comptes</button>
+                        <button onclick="exporterUtilisateurs()" class="btn-secondary" style="width: 100%;">👥 Exporter les utilisateurs</button>
+                        <hr style="margin: 1rem 0; border: none; border-top: 1px solid #dee2e6;">
+                        <button onclick="confirmerSuppression()" class="btn-danger" style="width: 100%;">🗑️ Supprimer toutes les données</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profil -->
+        <section id="profil" class="section hidden">
+            <h2>🧑 Mon profil</h2>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
+                <div class="card">
+                    <h3>📋 Informations personnelles</h3>
+                    <div id="profil-info" style="margin-top: 1rem;">
+                        <p style="margin-bottom: 0.75rem;"><strong>Nom complet :</strong> <span id="profil-nom">-</span></p>
+                        <p style="margin-bottom: 0.75rem;"><strong>Email :</strong> <span id="profil-email">-</span></p>
+                        <p style="margin-bottom: 0.75rem;"><strong>Rôle :</strong> <span id="profil-role">-</span></p>
+                        <p style="margin-bottom: 0.75rem;"><strong>Organisation :</strong> <span id="profil-organisation">-</span></p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>🔐 Modifier le mot de passe</h3>
+                    <form id="form-changer-mot-de-passe" style="margin-top: 1rem;">
+                        <div style="margin-bottom: 1rem;">
+                            <label for="ancien-mot-de-passe">Ancien mot de passe :</label>
+                            <input type="password" id="ancien-mot-de-passe" name="ancienMotDePasse" placeholder="Ancien mot de passe" required />
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label for="nouveau-mot-de-passe-profil">Nouveau mot de passe :</label>
+                            <input type="password" id="nouveau-mot-de-passe-profil" name="nouveauMotDePasse" placeholder="Nouveau mot de passe" required />
+                        </div>
+                        <div style="margin-bottom: 1rem;">
+                            <label for="confirmer-mot-de-passe-profil">Confirmer le mot de passe :</label>
+                            <input type="password" id="confirmer-mot-de-passe-profil" name="confirmerMotDePasse" placeholder="Confirmer le nouveau mot de passe" required />
+                        </div>
+                        <button type="submit" class="btn-primary" style="width: 100%;">🔐 Changer le mot de passe</button>
+                    </form>
+                </div>
+            </div>
+            <div class="card" style="margin-top: 1.5rem;">
+                <h3>📊 Mes statistiques</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+                    <div style="padding: 1rem; background: #f8f9fa; border-radius: 0.5rem;">
+                        <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Documents créés</p>
+                        <h4 style="margin: 0.5rem 0 0; font-size: 1.5rem;" id="profil-docs-crees">0</h4>
+                    </div>
+                    <div style="padding: 1rem; background: #f8f9fa; border-radius: 0.5rem;">
+                        <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Comptes créés</p>
+                        <h4 style="margin: 0.5rem 0 0; font-size: 1.5rem;" id="profil-comptes-crees">0</h4>
+                    </div>
+                    <div style="padding: 1rem; background: #f8f9fa; border-radius: 0.5rem;">
+                        <p style="margin: 0; color: #6c757d; font-size: 0.9rem;">Dernière connexion</p>
+                        <h4 style="margin: 0.5rem 0 0; font-size: 1rem;" id="profil-derniere-connexion">-</h4>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main> 
+
+    <footer id="app-footer" class="hidden">
+        <p>&copy; 2025 Credit International - Tous droits réservés</p>
+        <p>📧 Contact : contact@cisenegal.com | 📞 Téléphone : +221 33 823 18 18</p>
+        <p>
+            Credit International respecte les normes de sécurité et de conformité les plus strictes pour garantir  
+            la confidentialité et l'intégrité de vos documents.
+        </p>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Configuration globale
+        window.DARK_CONFIG = {
+            maxFileSize: 10 * 1024 * 1024, // 10MB
+            allowedFileTypes: ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'],
+            debug: false
+        };
+    </script>
+    <script src="interface.js"></script>
+</body>
+</html> 
